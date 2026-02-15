@@ -48,8 +48,8 @@ class ImageWidget(forms.FileInput):
         self.height = height
         super(ImageWidget, self).__init__(attrs)
 
-    def render(self, name, value, attrs=None):
-        input_html = super(ImageWidget, self).render(name, value, attrs)
+    def render(self, name, value, attrs=None, renderer=None):
+        input_html = super(ImageWidget, self).render(name, value, attrs, renderer)
         if hasattr(value, 'width') and hasattr(value, 'height'):
             image_html = thumbnail(value.name, self.width, self.height)
             output = self.template % {'input': input_html,
@@ -72,22 +72,42 @@ class ClearableFileInput(forms.MultiWidget):
             widgets=[file_widget, forms.CheckboxInput()],
             attrs=attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
+        # Store the value for conditional rendering
         if isinstance(value, list):
-            self.value = value[0]
+            current_value = value[0]
         else:
-            self.value = value
-        return super(ClearableFileInput, self).render(name, value, attrs)
+            current_value = value
+        
+        # Decompress the value for rendering  
+        if not isinstance(value, list):
+            value = self.decompress(value)
+        
+        # Render each subwidget individually
+        if attrs is None:
+            attrs = {}
+        
+        # Get id for the widgets
+        id_ = attrs.get('id')
+        
+        rendered_widgets = []
+        for i, widget in enumerate(self.widgets):
+            widget_attrs = attrs.copy()
+            if id_:
+                widget_attrs['id'] = '%s_%s' % (id_, i)
+            widget_name = '%s_%s' % (name, i)
+            widget_value = value[i] if i < len(value) else None
+            rendered_widgets.append(widget.render(widget_name, widget_value, widget_attrs, renderer))
+        
+        # Format output based on our custom template
+        if current_value:
+            return mark_safe(self.template % {'input': rendered_widgets[0],
+                                               'checkbox': rendered_widgets[1]})
+        return mark_safe(rendered_widgets[0])
 
     def decompress(self, value):
         # the clear checkbox is never initially checked
         return [value, None]
-
-    def format_output(self, rendered_widgets):
-        if self.value:
-            return self.template % {'input': rendered_widgets[0],
-                                    'checkbox': rendered_widgets[1]}
-        return rendered_widgets[0]
 
 root = lambda path: posixpath.join(settings.STATIC_URL, path)
 
