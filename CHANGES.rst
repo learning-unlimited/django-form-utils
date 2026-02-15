@@ -4,6 +4,12 @@ CHANGES
 tip (unreleased)
 ----------------
 
+- Added support for Django 3.x (3.0, 3.1, 3.2) and Python 3.10
+- Removed support for Django < 2.2 and Python 2.x
+- Removed django.utils.six dependency (removed in Django 3.0)
+- Updated widget rendering to be compatible with Django 3.x template-based rendering
+- Fixed BoundField import for Django 3.x compatibility
+
 1.0.3 (2015-08-25)
 ------------------
 
