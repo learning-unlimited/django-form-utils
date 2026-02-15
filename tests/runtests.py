@@ -3,6 +3,10 @@
 import os
 import sys
 
+# Add parent directory to path first
+parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, parent)
+
 import django
 from django.conf import settings
 
@@ -17,7 +21,18 @@ if not settings.configured:
         MEDIA_ROOT=os.path.join(os.path.dirname(__file__), 'media'),
         MEDIA_URL='/media/',
         STATIC_URL='/static/',
-        MIDDLEWARE_CLASSES=[],
+        MIDDLEWARE=[],
+        TEMPLATES=[{
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                ],
+            },
+        }],
         )
 
     settings.configure(**settings_dict)
@@ -30,9 +45,6 @@ if django.VERSION >= (1, 7):
 def runtests(*test_args):
     if not test_args:
         test_args = ['tests']
-
-    parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    sys.path.insert(0, parent)
 
     try:
         from django.test.runner import DiscoverRunner as Runner

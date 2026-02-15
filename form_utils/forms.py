@@ -9,11 +9,8 @@ from __future__ import unicode_literals
 from copy import deepcopy
 
 from django import forms
-try:
-    from django.forms.utils import flatatt, ErrorDict
-except ImportError: # Django < 1.9 compatibility
-    from django.forms.util import flatatt, ErrorDict
-from django.utils import six
+from django.forms.utils import flatatt, ErrorDict
+from django.forms.boundfield import BoundField
 from django.utils.safestring import mark_safe
 
 
@@ -43,7 +40,7 @@ class Fieldset(object):
         self.name = name
 
     def _errors(self):
-        return ErrorDict(((k, v) for (k, v) in six.iteritems(self.form.errors)
+        return ErrorDict(((k, v) for (k, v) in self.form.errors.items()
                           if k in [f.name for f in self.boundfields]))
     errors = property(_errors)
 
@@ -92,8 +89,8 @@ class FieldsetCollection(object):
             except KeyError:
                 message = "Fieldset definition must include 'fields' option."
                 raise ValueError(message)
-            boundfields = [forms.forms.BoundField(self.form,
-                                                  self.form.fields[n], n)
+            boundfields = [BoundField(self.form,
+                                      self.form.fields[n], n)
                            for n in field_names]
             self._cached_fieldsets.append(Fieldset(self.form, name,
                 boundfields, options.get('legend', None),

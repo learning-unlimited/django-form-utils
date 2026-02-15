@@ -8,7 +8,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.models.fields.files import (
     FieldFile, ImageFieldFile, FileField, ImageField)
 from django.test import TestCase
-from django.utils import six
 
 from mock import patch
 
@@ -460,6 +459,7 @@ class BetterFormTests(TestCase):
 
 number_field_type = 'number' if django.VERSION > (1, 6, 0) else 'text'
 label_suffix = ':' if django.VERSION > (1, 6, 0) else ''
+required_attr = ' required' if django.VERSION >= (3, 0, 0) else ''
 
 
 class BoringForm(forms.Form):
@@ -472,15 +472,15 @@ class TemplatetagTests(TestCase):
         u'<ul>'
         u'<li>'
         u'<label for="id_boredom">Boredom%(suffix)s</label>'
-        u'<input type="%(type)s" name="boredom" id="id_boredom" />'
+        u'<input type="%(type)s" name="boredom" id="id_boredom"%(required)s />'
         u'</li>'
         u'<li>'
         u'<label for="id_excitement">Excitement%(suffix)s</label>'
-        u'<input type="%(type)s" name="excitement" id="id_excitement" />'
+        u'<input type="%(type)s" name="excitement" id="id_excitement"%(required)s />'
         u'</li>'
         u'</ul>'
         u'</fieldset>'
-        ) % {'type': number_field_type, 'suffix': label_suffix}
+        ) % {'type': number_field_type, 'suffix': label_suffix, 'required': required_attr}
 
     def test_render_form(self):
         """
@@ -497,11 +497,11 @@ class TemplatetagTests(TestCase):
         u'<ul>'
         u'<li class="required">'
         u'<label for="id_name">Name%(suffix)s</label>'
-        u'<input type="text" name="name" id="id_name" />'
+        u'<input type="text" name="name" id="id_name"%(required)s />'
         u'</li>'
         u'<li class="required">'
         u'<label for="id_position">Position%(suffix)s</label>'
-        u'<input type="text" name="position" id="id_position" />'
+        u'<input type="text" name="position" id="id_position"%(required)s />'
         u'</li>'
         u'</ul>'
         u'</fieldset>'
@@ -514,7 +514,7 @@ class TemplatetagTests(TestCase):
         u'</li>'
         u'</ul>'
         u'</fieldset>'
-        ) % {'suffix': label_suffix}
+        ) % {'suffix': label_suffix, 'required': required_attr}
 
     def test_render_betterform(self):
         """
@@ -636,9 +636,9 @@ class ClearableFileFieldTests(TestCase):
             f = ClearableFileField()
         form = TestForm(files={'f_0': self.upload})
         self.assertHTMLEqual(
-            six.text_type(form['f']),
-            u'<input type="file" name="f_0" id="id_f_0" />'
-            u' Clear: <input type="checkbox" name="f_1" id="id_f_1" />'
+            str(form['f']),
+            u'<input type="file" name="f_0" id="id_f_0" required />'
+            u' Clear: <input type="checkbox" name="f_1" id="id_f_1" required />'
             )
 
     def test_not_cleared(self):
@@ -709,7 +709,12 @@ class ClearableFileFieldTests(TestCase):
         widget = ImageWidget()
         file_field = forms.ImageField(widget=widget)
         field = ClearableFileField(file_field=file_field)
-        self.assertTrue(field.fields[0].widget is widget)
+        # In Django 3.0+, widgets are deep copied when passed to Field.__init__,
+        # so we check the type instead of identity
+        if django.VERSION >= (3, 0):
+            self.assertIsInstance(field.fields[0].widget, ImageWidget)
+        else:
+            self.assertTrue(field.fields[0].widget is widget)
 
     def test_clearable_image_field(self):
         """
