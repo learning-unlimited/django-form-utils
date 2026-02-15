@@ -15,7 +15,7 @@ from form_utils.forms import BetterForm, BetterModelForm
 from form_utils.widgets import ImageWidget, ClearableFileInput
 from form_utils.fields import ClearableFileField, ClearableImageField
 
-from tests.models import Person, Document
+from .models import Person, Document
 
 
 class ApplicationForm(BetterForm):
