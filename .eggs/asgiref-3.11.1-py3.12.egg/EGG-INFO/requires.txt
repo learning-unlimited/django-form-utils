@@ -1,0 +1,5 @@
+
+[tests]
+mypy>=1.14.0
+pytest
+pytest-asyncio
