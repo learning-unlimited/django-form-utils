@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import django
 from django import forms
@@ -9,7 +8,7 @@ from django.db.models.fields.files import (
     FieldFile, ImageFieldFile, FileField, ImageField)
 from django.test import TestCase
 
-from mock import patch
+from unittest.mock import patch
 
 from form_utils.forms import BetterForm, BetterModelForm
 from form_utils.widgets import ImageWidget, ClearableFileInput

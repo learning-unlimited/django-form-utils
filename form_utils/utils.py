@@ -5,7 +5,6 @@ utility functions for django-form-utils
 Time-stamp: <2009-03-26 12:32:41 carljm utils.py>
 
 """
-from __future__ import unicode_literals
 
 from django.template import loader
 

@@ -47,10 +47,10 @@ To run tests using tox::
 
     tox
 
-To fully run the tests via tox, you must have python2.6, python2.7, and
-python3.3 interpreters on your system, available by those names. If you are
-missing one or more interpreters, tox will skip testing against that Python
-version and notify you.
+To fully run the tests via tox, you should have the configured Python
+interpreters on your system (currently Python 3.8 through 3.12, depending on
+the tox environment). If you are missing one or more interpreters, tox will
+skip testing against that Python version and notify you.
 
 When submitting a pull request, please note whether you've run the tests with
 tox (and against which versions). Before a pull request can be merged, all

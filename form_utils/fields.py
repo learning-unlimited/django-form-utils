@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 from django import forms
 
@@ -45,7 +44,7 @@ class ClearableFileField(forms.MultiValueField):
         kwargs['required'] = file_field.required
         kwargs['widget'] = self.widget(file_widget=file_field.widget,
                                        template=template)
-        super(ClearableFileField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
         if data_list[1] and not data_list[0]:

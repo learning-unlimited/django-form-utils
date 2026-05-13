@@ -6,7 +6,6 @@ parts of this code taken from http://www.djangosnippets.org/snippets/934/
  - thanks baumer1122
 
 """
-from __future__ import unicode_literals
 
 import posixpath
 
@@ -46,10 +45,10 @@ class ImageWidget(forms.FileInput):
             self.template = template
         self.width = width
         self.height = height
-        super(ImageWidget, self).__init__(attrs)
+        super().__init__(attrs)
 
     def render(self, name, value, attrs=None, renderer=None):
-        input_html = super(ImageWidget, self).render(name, value, attrs, renderer)
+        input_html = super().render(name, value, attrs, renderer)
         if hasattr(value, 'width') and hasattr(value, 'height'):
             image_html = thumbnail(value.name, self.width, self.height)
             output = self.template % {'input': input_html,
@@ -68,7 +67,7 @@ class ClearableFileInput(forms.MultiWidget):
         if template is not None:
             self.template = template
         file_widget = file_widget or self.default_file_widget_class()
-        super(ClearableFileInput, self).__init__(
+        super().__init__(
             widgets=[file_widget, forms.CheckboxInput()],
             attrs=attrs)
 
@@ -129,7 +128,7 @@ class AutoResizeTextarea(forms.Textarea):
             attrs['class'] = 'autoresize'
         attrs.setdefault('cols', 80)
         attrs.setdefault('rows', 5)
-        super(AutoResizeTextarea, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class InlineAutoResizeTextarea(AutoResizeTextarea):
@@ -141,4 +140,4 @@ class InlineAutoResizeTextarea(AutoResizeTextarea):
             attrs['class'] = 'inline'
         attrs.setdefault('cols', 40)
         attrs.setdefault('rows', 2)
-        super(InlineAutoResizeTextarea, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
