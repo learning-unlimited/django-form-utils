@@ -665,6 +665,8 @@ class ClearableFileFieldTests(TestCase):
         doc = Document.objects.create(myfile='something.txt')
         field = ClearableFileField(required=False)
         result = field.clean(['', '1'])
+        self.assertEqual(result.name, '')
+        self.assertIsNone(result._file)
         doc._meta.get_field('myfile').save_form_data(doc, result)
         doc.save()
         doc = Document.objects.get(pk=doc.pk)

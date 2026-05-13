@@ -31,6 +31,8 @@ class FakeEmptyFieldFile(object):
     """
     def __str__(self):
         return ''
+    name = ''
+    _file = None
     _committed = True
 
 

@@ -48,8 +48,8 @@ and ``templates/form_utils/form.html``.
 Dependencies
 ------------
 
-``django-form-utils`` is tested on Django 2.2 and later and Python 3.6, 3.7,
-3.8, 3.9, and 3.10.
+``django-form-utils`` is tested on Django 4.0, 4.1, and 4.2 and Python 3.8,
+3.9, and 3.10.
 
 `ImageWidget`_ requires the `Python Imaging Library`_.
 `sorl-thumbnail`_ or `easy-thumbnails`_ is optional, but without it
