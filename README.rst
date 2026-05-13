@@ -48,8 +48,8 @@ and ``templates/form_utils/form.html``.
 Dependencies
 ------------
 
-``django-form-utils`` is tested on Django 4.0, 4.1, and 4.2 and Python 3.8,
-3.9, and 3.10.
+``django-form-utils`` is tested on Django 4.0, 4.1, and 4.2 and Python 3.8
+through 3.12.
 
 `ImageWidget`_ requires the `Python Imaging Library`_.
 `sorl-thumbnail`_ or `easy-thumbnails`_ is optional, but without it
@@ -421,9 +421,9 @@ JQUERY_URL
 ----------
 
 `AutoResizeTextarea`_ requires the jQuery Javascript library.  By
-default, ``django-form-utils`` links to the most recent minor version
-of jQuery 1.8 available at ajax.googleapis.com (via the URL
-``http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js``).
+default, ``django-form-utils`` links to jQuery 3.7.1 at
+ajax.googleapis.com (via the URL
+``https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js``).
 If you wish to use a different version of jQuery, or host it yourself,
 set the JQUERY_URL setting.  For example::
 

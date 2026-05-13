@@ -5,25 +5,12 @@ forms for django-form-utils
 Time-stamp: <2010-04-28 02:57:16 carljm forms.py>
 
 """
-from __future__ import unicode_literals
 from copy import deepcopy
 
 from django import forms
 from django.forms.utils import flatatt, ErrorDict
 from django.forms.boundfield import BoundField
 from django.utils.safestring import mark_safe
-
-
-def with_metaclass(meta, *bases):
-    """Create a base class with a metaclass.
-
-    I'm not sure exactly why this is needed, but the implementation in six
-    changed (see
-    https://github.com/django/django/commit/a2340ac6d6b7e31c7e97e8fdaf3e1d73e43b24ba)
-    and the new version doesn't work here.
-
-    """
-    return meta(str("NewBase"), bases, {})
 
 
 class Fieldset(object):
@@ -170,8 +157,7 @@ class BetterFormBaseMetaclass(type):
             _set_meta_attr(attrs, 'fields', fields)
         attrs['base_row_attrs'] = get_row_attrs(bases, attrs)
 
-        new_class = super(BetterFormBaseMetaclass,
-                          cls).__new__(cls, name, bases, attrs)
+        new_class = super().__new__(cls, name, bases, attrs)
         return new_class
 
 
@@ -241,7 +227,7 @@ class BetterBaseForm(object):
         self._fieldsets = deepcopy(self.base_fieldsets)
         self._row_attrs = deepcopy(self.base_row_attrs)
         self._fieldset_collection = None
-        super(BetterBaseForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def fieldsets(self):
@@ -251,21 +237,21 @@ class BetterBaseForm(object):
         return self._fieldset_collection
 
     def __iter__(self):
-        for bf in super(BetterBaseForm, self).__iter__():
+        for bf in super().__iter__():
             yield _mark_row_attrs(bf, self)
 
     def __getitem__(self, name):
-        bf = super(BetterBaseForm, self).__getitem__(name)
+        bf = super().__getitem__(name)
         return _mark_row_attrs(bf, self)
 
 
-class BetterForm(with_metaclass(BetterFormMetaclass, BetterBaseForm),
-                 forms.Form):
+class BetterForm(BetterBaseForm, forms.Form, metaclass=BetterFormMetaclass):
     __doc__ = BetterBaseForm.__doc__
 
 
-class BetterModelForm(with_metaclass(BetterModelFormMetaclass,
-                                     BetterBaseForm), forms.ModelForm):
+class BetterModelForm(
+    BetterBaseForm, forms.ModelForm, metaclass=BetterModelFormMetaclass
+):
     __doc__ = BetterBaseForm.__doc__
 
 
@@ -282,18 +268,18 @@ class BasePreviewFormMixin(object):
 
     """
     def __init__(self, *args, **kwargs):
-        super(BasePreviewFormMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.preview = self.check_preview(kwargs.get('data', None))
 
     def check_preview(self, data):
-        if data and data.get('submit', '').lower() == u'preview':
+        if data and data.get('submit', '').lower() == 'preview':
             return True
         return False
 
     def is_valid(self, *args, **kwargs):
         if self.preview:
             return False
-        return super(BasePreviewFormMixin, self).is_valid()
+        return super().is_valid()
 
 
 class PreviewModelForm(BasePreviewFormMixin, BetterModelForm):

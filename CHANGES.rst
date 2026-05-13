@@ -6,7 +6,7 @@ tip (unreleased)
 
 - Added support for Django 4.x (4.0, 4.1, 4.2)
 - Removed support for Django < 4.0 and Python < 3.8
-- Updated FakeEmptyFieldFile for compatibility with Django 4 FileField save flow
+- Removed Python 2-era compatibility code and modernized test/CI configuration
 
 1.0.3 (2015-08-25)
 ------------------

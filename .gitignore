@@ -2,5 +2,4 @@
 django_form_utils.egg-info/
 dist/*
 tests/media/tiny_png_*
-HGREV
 *.py[co]
